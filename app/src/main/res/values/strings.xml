@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PokemonCoe</string>
+    <string name="SquirtleWorldSprite">src\main\res\sprites\squirtle.png</string>
 </resources>
