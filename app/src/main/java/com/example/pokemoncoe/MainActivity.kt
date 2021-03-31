@@ -81,7 +81,12 @@ class MainActivity : FragmentActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap){
         mMap = googleMap
-
+        val circleCallback = object : GoogleMap.OnCircleClickListener{
+            override fun onCircleClick(p0: Circle?) {
+                Log.d("Circles", "Circle clicked is ${p0!!.tag.toString()}" )
+            }
+        }
+        mMap.setOnCircleClickListener(circleCallback)
     }
 
     var circle : Circle? = null
@@ -162,10 +167,10 @@ class MainActivity : FragmentActivity(), OnMapReadyCallback {
             var pkmnLoc1 = LatLng(lastLoc!!.latitude + TENTHMETER * 100, lastLoc!!.longitude + TENTHMETER*100)
             cOpt1.center(pkmnLoc1)
             cOpt1.radius(5.0)
+            cOpt1.clickable(true)
 
             Mons!!.add(WorldPokemon(pkmnLoc1, cOpt1, 0))
             addPokemonToMap(Mons!!, mMap)
         }
     }
-
 }
