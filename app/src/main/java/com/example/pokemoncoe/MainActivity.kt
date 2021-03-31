@@ -160,11 +160,16 @@ class MainActivity : FragmentActivity(), OnMapReadyCallback {
             pOpt.add(LatLng(lastLoc!!.latitude + 0.002f, lastLoc!!.longitude + 0.000f))
             pOpt.add(LatLng(lastLoc!!.latitude + 0.002f, lastLoc!!.longitude + 0.002f))
             pOpt.add(LatLng(lastLoc!!.latitude + 0.000f, lastLoc!!.longitude + 0.000f))
-            pOpt.fillColor(Color.CYAN)
+            pOpt.fillColor(Color.BLACK)
             pOpt.strokeWidth(2f)
             pOpt.strokeColor(Color.LTGRAY)
 
+            Log.d("Add", pOpt.toString())
+
+
+            //Somehow this does not initialize Mons!![0].mPolyOptions
             Mons!!.add(WorldPokemon(LatLng(lastLoc!!.latitude + 0.0001f, lastLoc!!.longitude + 0.0001f), pOpt, 0))
+            Log.d("Mons", Mons!![0].toString())
             addPokemonToMap(Mons!![0], mMap)
         }
     }
