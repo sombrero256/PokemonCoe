@@ -168,9 +168,9 @@ class MainActivity : FragmentActivity(), OnMapReadyCallback {
 
 
             //Somehow this does not initialize Mons!![0].mPolyOptions
-            Mons!!.add(WorldPokemon(LatLng(lastLoc!!.latitude + 0.0001f, lastLoc!!.longitude + 0.0001f), pOpt, 0))
+            Mons!![0] = WorldPokemon(LatLng(lastLoc!!.latitude + 0.0001f, lastLoc!!.longitude + 0.0001f), pOpt, 0)
             Log.d("Mons", Mons!![0].toString())
-            addPokemonToMap(WorldPokemon(LatLng(lastLoc!!.latitude + 0.0001f, lastLoc!!.longitude + 0.0001f), pOpt, 0), mMap)
+            addPokemonToMap(Mons!![0], mMap)
         }
     }
 
