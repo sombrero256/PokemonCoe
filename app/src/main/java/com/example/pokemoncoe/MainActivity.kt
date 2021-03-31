@@ -2,14 +2,12 @@ package com.example.pokemoncoe
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
@@ -21,9 +19,14 @@ class MainActivity : FragmentActivity(), OnMapReadyCallback {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var mMap: GoogleMap
+    var Mons : MutableList<WorldPokemon>? = null
     private var mHandler = Handler()
     private var mProjection : Projection? = null
-    private var mWorldPokemon : WorldPokemon? = null
+
+    private var lastLoc : LatLng? = null
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var reqCode = 101
@@ -53,11 +56,8 @@ class MainActivity : FragmentActivity(), OnMapReadyCallback {
                 //Graphical updates here.
                 drawPlayer(p0)
                 mProjection = mMap.projection
-                var mPoint = mProjection!!.toScreenLocation(mWorldPokemon!!.mLatLng)
+                lastLoc = LatLng(p0.lastLocation.latitude, p0.lastLocation.longitude)
 
-                with(Canvas()){
-
-                }
 
                 super.onLocationResult(p0)
             }
@@ -68,11 +68,13 @@ class MainActivity : FragmentActivity(), OnMapReadyCallback {
         var runnable: Runnable = object : Runnable {
             override fun run(){
                 //Gameplay updates here
+                gameCode()
                 mHandler.postDelayed(this, 1000)
             }
         }
         mHandler.postDelayed(runnable, 1000)
-        mWorldPokemon = WorldPokemon(LatLng(42.0006, -91.6543), resources.getDrawable(R.drawable.squirtle), 0)
+
+
     }
 
     override fun onMapReady(googleMap: GoogleMap){
@@ -138,6 +140,7 @@ class MainActivity : FragmentActivity(), OnMapReadyCallback {
                 Log.d("GPS", "In callback.")
                 p0 ?: return
                 drawPlayer(p0)
+                lastLoc = LatLng(p0.lastLocation.latitude, p0.lastLocation.longitude)
                 super.onLocationResult(p0)
             }
         }
@@ -146,7 +149,24 @@ class MainActivity : FragmentActivity(), OnMapReadyCallback {
     }
 
     fun gameCode(){
+        if(lastLoc == null ){
+            return;
+        }
+        Log.d("Gameplay", "In gameplay code")
+        if (Mons == null){
+            Mons = mutableListOf(WorldPokemon())
+            var pOpt = PolygonOptions()
+            pOpt.add(LatLng(lastLoc!!.latitude + 0.000f, lastLoc!!.longitude + 0.002f))
+            pOpt.add(LatLng(lastLoc!!.latitude + 0.002f, lastLoc!!.longitude + 0.000f))
+            pOpt.add(LatLng(lastLoc!!.latitude + 0.002f, lastLoc!!.longitude + 0.002f))
+            pOpt.add(LatLng(lastLoc!!.latitude + 0.000f, lastLoc!!.longitude + 0.000f))
+            pOpt.fillColor(Color.CYAN)
+            pOpt.strokeWidth(2f)
+            pOpt.strokeColor(Color.LTGRAY)
 
+            Mons!!.add(WorldPokemon(LatLng(lastLoc!!.latitude + 0.0001f, lastLoc!!.longitude + 0.0001f), pOpt, 0))
+            addPokemonToMap(Mons!![0], mMap)
+        }
     }
 
 }
