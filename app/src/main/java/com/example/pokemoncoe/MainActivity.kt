@@ -155,21 +155,7 @@ class MainActivity : FragmentActivity(), OnMapReadyCallback {
         Log.d("Gameplay", "In gameplay code")
         if (Mons == null){
             Mons = mutableListOf(WorldPokemon())
-            var pOpt = PolygonOptions()
-            pOpt.add(LatLng(lastLoc!!.latitude + 0.000f, lastLoc!!.longitude + 0.002f))
-            pOpt.add(LatLng(lastLoc!!.latitude + 0.002f, lastLoc!!.longitude + 0.000f))
-            pOpt.add(LatLng(lastLoc!!.latitude + 0.002f, lastLoc!!.longitude + 0.002f))
-            pOpt.add(LatLng(lastLoc!!.latitude + 0.000f, lastLoc!!.longitude + 0.000f))
-            pOpt.fillColor(Color.BLACK)
-            pOpt.strokeWidth(2f)
-            pOpt.strokeColor(Color.LTGRAY)
-
-            Log.d("Add", pOpt.toString())
-
-
-            //Somehow this does not initialize Mons!![0].mPolyOptions
-            Mons!![0] = WorldPokemon(LatLng(lastLoc!!.latitude + 0.0001f, lastLoc!!.longitude + 0.0001f), pOpt, 0)
-            Log.d("Mons", Mons!![0].toString())
+            //TODO refactor to have circles instead of nGons
             addPokemonToMap(Mons!![0], mMap)
         }
     }
