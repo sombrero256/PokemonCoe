@@ -14,6 +14,8 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.gms.tasks.Task
 
+const val TENTHMETER = 0.000001
+
 
 class MainActivity : FragmentActivity(), OnMapReadyCallback {
 
@@ -154,9 +156,15 @@ class MainActivity : FragmentActivity(), OnMapReadyCallback {
         }
         Log.d("Gameplay", "In gameplay code")
         if (Mons == null){
-            Mons = mutableListOf(WorldPokemon())
-            //TODO refactor to have circles instead of nGons
-            addPokemonToMap(Mons!![0], mMap)
+            Mons = mutableListOf<WorldPokemon>()
+
+            var cOpt1 = CircleOptions()
+            var pkmnLoc1 = LatLng(lastLoc!!.latitude + TENTHMETER * 100, lastLoc!!.longitude + TENTHMETER*100)
+            cOpt1.center(pkmnLoc1)
+            cOpt1.radius(5.0)
+
+            Mons!!.add(WorldPokemon(pkmnLoc1, cOpt1, 0))
+            addPokemonToMap(Mons!!, mMap)
         }
     }
 
