@@ -3,6 +3,7 @@ package com.example.pokemoncoe
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Location
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -83,7 +84,16 @@ class MainActivity : FragmentActivity(), OnMapReadyCallback {
         mMap = googleMap
         val circleCallback = object : GoogleMap.OnCircleClickListener{
             override fun onCircleClick(p0: Circle?) {
-                Log.d("Circles", "Circle clicked is ${p0!!.tag.toString()}" )
+
+                var loc1 = Location("")
+                loc1.latitude =lastLoc!!.latitude
+                loc1.longitude = lastLoc!!.longitude
+                var loc2 = Location("")
+                loc2.latitude = p0!!.center.latitude
+                loc2.longitude = p0.center.longitude
+
+                Log.d("Distance", "Distance to clicked \'Mon is ${loc2.distanceTo(loc1)}" )
+
             }
         }
         mMap.setOnCircleClickListener(circleCallback)
@@ -173,4 +183,5 @@ class MainActivity : FragmentActivity(), OnMapReadyCallback {
             addPokemonToMap(Mons!!, mMap)
         }
     }
+
 }
