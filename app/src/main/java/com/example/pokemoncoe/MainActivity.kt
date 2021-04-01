@@ -28,6 +28,7 @@ class MainActivity : FragmentActivity(), OnMapReadyCallback {
 
     private var lastLoc : LatLng? = null
 
+    private lateinit var Captured : MutableList<String>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +38,9 @@ class MainActivity : FragmentActivity(), OnMapReadyCallback {
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        //init captured list
+        Captured = mutableListOf<String>()
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -68,7 +72,7 @@ class MainActivity : FragmentActivity(), OnMapReadyCallback {
 
         startLocationUpdates(locationRequest!!, locationCallback)
 
-        var runnable: Runnable = object : Runnable {
+        val runnable: Runnable = object : Runnable {
             override fun run(){
                 //Gameplay updates here
                 gameCode()
@@ -85,14 +89,24 @@ class MainActivity : FragmentActivity(), OnMapReadyCallback {
         val circleCallback = object : GoogleMap.OnCircleClickListener{
             override fun onCircleClick(p0: Circle?) {
 
-                var loc1 = Location("")
+                val loc1 = Location("")
                 loc1.latitude =lastLoc!!.latitude
                 loc1.longitude = lastLoc!!.longitude
-                var loc2 = Location("")
+                val loc2 = Location("")
                 loc2.latitude = p0!!.center.latitude
                 loc2.longitude = p0.center.longitude
 
+                Log.d("Circle", "id of clicked circle is ${p0.tag.toString()}")
                 Log.d("Distance", "Distance to clicked \'Mon is ${loc2.distanceTo(loc1)}" )
+
+                if(Mons?.get(p0.tag.toString().toInt()) != null){
+                    if(loc2.distanceTo(loc1) < 5.0f) {
+                        Captured.add(Mons?.get(p0.tag.toString().toInt())!!.mName)
+                        Mons?.get(p0.tag.toString().toInt())!!.mCircle!!.remove()
+                        Mons?.remove(Mons?.get(p0.tag.toString().toInt()))
+                        Log.d("Capture", "Mon captured was ${Captured[0]}")
+                    }
+                }
 
             }
         }
@@ -103,32 +117,32 @@ class MainActivity : FragmentActivity(), OnMapReadyCallback {
     fun drawPlayer(p0 : LocationResult){
 
         if(circle == null) {
-            var cOpt = CircleOptions()
+            val cOpt = CircleOptions()
             cOpt.center(LatLng(p0.lastLocation.latitude, p0.lastLocation.longitude))
             cOpt.radius(5.0)
             cOpt.strokeColor(Color.rgb(255, 69, 0))
             cOpt.fillColor(Color.rgb(255, 140, 0))
             circle = mMap.addCircle(cOpt)
 
-            var cp = CameraPosition.builder()
+            val cp = CameraPosition.builder()
             cp.tilt(45f)
             cp.zoom(20f)
             cp.bearing(0f)
             cp.target(LatLng(p0.lastLocation.latitude, p0.lastLocation.longitude))
 
-            var cu1 = CameraUpdateFactory.newCameraPosition(cp.build())
+            val cu1 = CameraUpdateFactory.newCameraPosition(cp.build())
             mMap.animateCamera(cu1)
 
         } else {
 
             circle!!.center = LatLng(p0.lastLocation.latitude, p0.lastLocation.longitude)
-            var cp = CameraPosition.builder()
+            val cp = CameraPosition.builder()
             cp.tilt(45f)
             cp.zoom(20f)
             cp.bearing(0f)
             cp.target(LatLng(p0.lastLocation.latitude, p0.lastLocation.longitude))
 
-            var cu1 = CameraUpdateFactory.newCameraPosition(cp.build())
+            val cu1 = CameraUpdateFactory.newCameraPosition(cp.build())
             mMap.animateCamera(cu1)
 
         }
@@ -146,7 +160,7 @@ class MainActivity : FragmentActivity(), OnMapReadyCallback {
     override fun onResume() {
 
         super.onResume()
-        val locationRequest = LocationRequest.create()?.apply {
+        val locationRequest = LocationRequest.create().apply {
             interval = 5000
             fastestInterval = 5000
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
@@ -161,7 +175,7 @@ class MainActivity : FragmentActivity(), OnMapReadyCallback {
                 super.onLocationResult(p0)
             }
         }
-        var t = startLocationUpdates(locationRequest!!, locationCallback)
+        var t = startLocationUpdates(locationRequest, locationCallback)
 
     }
 
