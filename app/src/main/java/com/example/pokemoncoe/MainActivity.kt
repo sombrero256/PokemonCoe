@@ -193,7 +193,7 @@ class MainActivity : FragmentActivity(), OnMapReadyCallback {
             cOpt1.radius(5.0)
             cOpt1.clickable(true)
 
-            Mons!!.add(WorldPokemon(pkmnLoc1, cOpt1, 0))
+            Mons!!.add(WorldPokemon(cOpt1, 0))
             addPokemonToMap(Mons!!, mMap)
         }
     }

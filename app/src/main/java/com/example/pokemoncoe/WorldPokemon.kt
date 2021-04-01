@@ -7,7 +7,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.*
 
 class WorldPokemon {
-    var mLatLng : LatLng? = null
     lateinit var mCircleOptions : CircleOptions
     //This will be null until addPokemonToMap has been run on this 'mon
     var mCircle : Circle? = null
@@ -18,11 +17,9 @@ class WorldPokemon {
 
     }
 
-    constructor(l: LatLng, c: CircleOptions, i: Int){
-        mLatLng = l
+    constructor(c: CircleOptions, i: Int){
         id = i
         mCircleOptions = c
-
     }
 }
 
